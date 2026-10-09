@@ -15,6 +15,7 @@ interface HeaderProps {
   isProcessing: boolean;
   theme: 'dark' | 'light';
   toggleTheme: () => void;
+  onLogout: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -23,7 +24,8 @@ export const Header: React.FC<HeaderProps> = ({
   onReset,
   isProcessing,
   theme,
-  toggleTheme
+  toggleTheme,
+  onLogout
 }) => {
   return (
     <header className="border-b border-slate-200 dark:border-slate-800/80 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md sticky top-0 z-40 transition-colors">
@@ -100,6 +102,16 @@ export const Header: React.FC<HeaderProps> = ({
               ) : (
                 <Moon className="w-3.5 h-3.5 text-slate-700" />
               )}
+            </button>
+
+            {/* Lock / Sign Out */}
+            <button
+              onClick={onLogout}
+              title="Lock system / Sign out"
+              className="flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-red-950/40 hover:border-red-200 dark:hover:border-red-800 text-slate-500 hover:text-red-500 transition-colors cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5 hidden" />
+              <span className="text-[10px] font-bold">Lock</span>
             </button>
 
             {/* New Client Reset */}

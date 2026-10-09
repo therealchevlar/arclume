@@ -195,6 +195,16 @@ Farhan`,
   };
 }
 
+// Auth Login Endpoint
+app.post('/api/auth/login', (req: Request, res: Response) => {
+  const { username, password } = req.body;
+  if (username === 'farhanmuhammad' && password === 'lahore>london') {
+    const token = Buffer.from(`${username}:${Date.now()}`).toString('base64');
+    return res.json({ success: true, token, user: 'farhanmuhammad' });
+  }
+  return res.status(401).json({ success: false, error: 'Invalid username or password' });
+});
+
 // Endpoint: Main Copilot Chat & Analysis
 app.post('/api/copilot/chat', async (req: Request, res: Response) => {
   try {

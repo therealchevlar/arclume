@@ -3,12 +3,21 @@ import { Header } from './components/Header';
 import { CopilotWorkspace, CopilotAnalysisResult } from './components/CopilotWorkspace';
 import { ServiceCatalogView } from './components/ServiceCatalogView';
 import { EscalationHub } from './components/EscalationHub';
+import { LoginGate } from './components/LoginGate';
 import { Toast, ToastMessage } from './components/Toast';
 import { ServiceDefinition } from './data/services';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'workspace' | 'services' | 'coordination'>('workspace');
   
+  // Auth state: check localStorage
+  const [authToken, setAuthToken] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('copilot_auth_token');
+    }
+    return null;
+  });
+
   // Theme state: dark mode by default, persisted in localStorage
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     if (typeof window !== 'undefined') {
@@ -30,6 +39,11 @@ export default function App() {
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('copilot_auth_token');
+    setAuthToken(null);
   };
 
   // Copilot Input States
@@ -84,6 +98,7 @@ export default function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-copilot-auth': authToken || ''
         },
         body: JSON.stringify(payload),
       });
@@ -164,9 +179,20 @@ export default function App() {
     });
   };
 
+  // If not authenticated, show sleek Lock Gate Screen
+  if (!authToken) {
+    return (
+      <LoginGate
+        onSuccess={(token) => setAuthToken(token)}
+        theme={theme}
+        toggleTheme={toggleTheme}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f17] text-slate-900 dark:text-slate-100 font-sans flex flex-col selection:bg-indigo-500 selection:text-white transition-colors">
-      {/* Executive Header with Light/Dark Mode Toggle */}
+      {/* Executive Header with Light/Dark Mode Toggle & Lock button */}
       <Header
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -174,6 +200,7 @@ export default function App() {
         isProcessing={isLoading}
         theme={theme}
         toggleTheme={toggleTheme}
+        onLogout={handleLogout}
       />
 
       {/* Main Workspace Area */}

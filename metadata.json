@@ -1,0 +1,6 @@
+{
+  "name": "Farhan's Sales Copilot",
+  "description": "AI sales, client communication, pricing, and technical coordination assistant for Farhan and Hamza.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
